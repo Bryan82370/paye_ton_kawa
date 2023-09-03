@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:paye_ton_kawa/screen/product.dart';
+import 'package:paye_ton_kawa/screen/security.dart';
+import 'package:paye_ton_kawa/screen/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MyApp());
@@ -21,43 +25,57 @@ class MyApp extends StatelessWidget {
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Page de Connexion'),
-      ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(50.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(50.0),
+                child: Icon(
+                  Icons.lock,
+                  color: Colors.green,
+                  size: 200.0,
+                ),
+              ),
               TextField(
                 controller: _usernameController,
-                decoration: InputDecoration(labelText: 'Nom d\'utilisateur'),
+                decoration: InputDecoration(labelText: 'Email'),
               ),
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Mot de passe'),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  // Vérifier la connexion
-                  final prefs = await SharedPreferences.getInstance();
-                  prefs.setBool('isLogged', true);
+              Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Vérifier la connexion
 
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => NavigationPage(),
-                    ),
-                  );
-                },
-                child: Text('Se Connecter'),
+                    print(_usernameController.text);
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => NavigationPage(),
+                      ),
+                    );
+                  },
+                  child: Text("S'inscrire"),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // Vérifier la connexion
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (_) => ScanPage(),
+                      ),
+                    );
+                  },
+                  child: Text('Se Connecter'),
+                ),
               ),
             ],
           ),
@@ -76,7 +94,6 @@ class _NavigationPageState extends State<NavigationPage> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    HomePage(),
     SearchPage(),
     SettingPage(),
   ];
@@ -86,21 +103,7 @@ class _NavigationPageState extends State<NavigationPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Paye ton kawa'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              final prefs = await SharedPreferences.getInstance();
-              prefs.setBool('isLogged', false);
-
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (_) => LoginPage(),
-                ),
-              );
-            },
-          ),
-        ],
+        backgroundColor: Colors.green,
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -112,28 +115,17 @@ class _NavigationPageState extends State<NavigationPage> {
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Accueil',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.shop_rounded),
+            backgroundColor: Colors.green,
             label: 'Produits',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
+            backgroundColor: Colors.green,
             label: 'Paramètres',
           ),
         ],
       ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Ceci est la page d\'accueil'),
     );
   }
 }
@@ -147,11 +139,20 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-class SettingPage extends StatelessWidget {
+class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Ceci est la page de paramètres'),
+    return const MaterialApp(
+      home: SettingPage(),
+    );
+  }
+}
+
+class ScanPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: MyHomePage(),
     );
   }
 }

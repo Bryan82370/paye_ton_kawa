@@ -32,6 +32,8 @@ dependencies:
     sdk: flutter
   shared_preferences: ^2.2.1
   http: ^1.1.0
+  mobile_scanner: ^1.0.0
+  babstrap_settings_screen: ^0.1.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
